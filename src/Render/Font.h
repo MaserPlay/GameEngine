@@ -76,8 +76,6 @@ namespace Font {
     };
     void InitLib();
     void Destroy();
-    void RenderText(const std::string& text, glm::vec2 pos, glm::mat4 mat, std::vector<std::unique_ptr<MergedRender>>& v, float size = 1, Color color = {1., 1., 1., 1.});
-    long TextWidth(const std::string& text);
     class Font final {
     public:
         virtual ~Font();
@@ -98,6 +96,8 @@ namespace Font {
         FT_Face face = nullptr;
         std::map<char, std::unique_ptr<Char>> m {};
     };
+    void RenderText(const std::string& text, Font*, glm::vec2 pos, glm::mat4 mat, std::vector<std::unique_ptr<MergedRender>>& v, float size = 1, Color color = {1., 1., 1., 1.});
+    long TextWidth(const std::string& text, Font*);
 }
 
 

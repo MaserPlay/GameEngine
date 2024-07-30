@@ -90,7 +90,9 @@ void MergedRender::SetUniform(glm::mat4 attr, const std::string &name) {
 
 void MergedRender::use(glm::mat4 matrix) {
     useProgramm();
-    SetUniform({getWidth(),getHeight()}, "u_resolution");
+    int width, height;
+    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    SetUniform({width, height}, "u_resolution");
     SetUniform(matrix, "projection");
     useClear();
 }

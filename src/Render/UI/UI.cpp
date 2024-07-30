@@ -19,8 +19,10 @@ void UI::DarkerBackground(std::unique_ptr<MergedRender>& m) {
 }
 
 glm::vec2 UI::vector_to_uicoords(double xpos, double ypos){
-    if ((float) getWidth() > (float) getHeight())
-        return {((float) getWidth()/(float) getHeight() * 2) /((float) getWidth() / xpos) - ((float) getWidth()/(float) getHeight()),ypos / getHeight() * -2 + 1};
+    int width, height;
+    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    if ((float) width > (float) height)
+        return {((float) width/(float) height * 2) /((float) width / xpos) - ((float) width/(float) height),ypos / height * -2 + 1};
     else
-        return {xpos / getWidth() * 2 - 1,(((float) getHeight()/(float) getWidth() * 2) /((float) getHeight() / ypos) - ((float) getHeight()/(float) getWidth())) * -1};
+        return {xpos / width * 2 - 1,(((float) height/(float) width * 2) /((float) height / ypos) - ((float) height/(float) width)) * -1};
 }

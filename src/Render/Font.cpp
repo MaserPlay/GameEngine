@@ -8,7 +8,6 @@
 #include <locale>
 #include <codecvt>
 #include "Font.h"
-#include "main.h"
 //STB
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -80,15 +79,15 @@ namespace Font{
     Font::~Font() {
         FT_Done_Face(face);   // Завершение работы с шрифтом face
     }
-    void RenderText(const std::string& text, glm::vec2 pos, glm::mat4 mat, std::vector<std::unique_ptr<MergedRender>>& v, float size, Color color){
-        if (getFont() == NULL)
+    void RenderText(const std::string& text, Font* f, glm::vec2 pos, glm::mat4 mat, std::vector<std::unique_ptr<MergedRender>>& v, float size, Color color){
+        if (f == NULL)
         {
             return;
         }
         glm::vec2 shift = pos;
         v.resize(text.size());
         for (size_t i = 0; i < text.size(); ++i) {
-            auto ch = getFont()->getChar(text[i]);
+            auto ch = f->getChar(text[i]);
             if (ch != NULL)
             {
                 shift.x += (float) ch->getBearingX() * size;
@@ -111,16 +110,16 @@ namespace Font{
             }
         }
     }
-    long TextWidth(const std::string& text){
-        if (getFont() == NULL)
+    long TextWidth(const std::string& text, Font* f){
+        if (f == NULL)
         {
             return 0;
         }
         auto width = 0;
         for (auto& c : text) {
-            if (getFont()->getChar(c) != NULL)
+            if (f->getChar(c) != NULL)
             {
-                width += getFont()->getChar(c)->getAdvance() / 64;
+                width += f->getChar(c)->getAdvance() / 64;
             }
         }
         return width;

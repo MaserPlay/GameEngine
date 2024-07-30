@@ -5,8 +5,8 @@
 #ifndef ARCADEGAMES_BUTTON_H
 #define ARCADEGAMES_BUTTON_H
 
-
 #include "MergedRender.h"
+#include "Font.h"
 
 struct Button {
     Button(const std::function<void(void)> &func, const std::string &name) : func(func), name(name) {}
@@ -17,7 +17,7 @@ struct Button {
 };
 namespace ButtonVBox{
     void Init(std::vector<Button>& v);
-    void Show(std::vector<Button>& v, glm::mat4 mat);
+    void Show(std::vector<Button>& v, Font::Font*, glm::mat4 mat);
     void Click(std::vector<Button>& v);
 }
 

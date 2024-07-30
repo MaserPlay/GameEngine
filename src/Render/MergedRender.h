@@ -5,11 +5,11 @@
 #ifndef ARCADEGAMES_MERGEDRENDER_H
 #define ARCADEGAMES_MERGEDRENDER_H
 
-#include <glm/ext/matrix_float4x4.hpp>
+#include "glm/mat4x4.hpp"
 #include <utility>
-#include "Context.h"
-#include "Texture.h"
+#include "Render.h"
 #include "Other.h"
+#include "Texture.h"
 
 class MergedRender final {
     //SHADER
