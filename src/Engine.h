@@ -32,6 +32,23 @@ struct Quard{
     std::shared_ptr<Texture> texture {};
     Color color {1.,1.,1.,1.};
 
+#define OPERATOR(t) \
+    operator Quard<t>() const { \
+        Quard<t> to {(Coords<t>) ld, (t) width, (t) height, texture}; \
+        to.color = color; \
+        return to; \
+    }
+    OPERATOR(float)
+    OPERATOR(double)
+    OPERATOR(int)
+    OPERATOR(long)
+    OPERATOR(long long)
+    OPERATOR(unsigned int)
+    OPERATOR(unsigned long)
+    OPERATOR(unsigned long long)
+    OPERATOR(long double)
+#undef OPERATOR
+
     inline
     std::array<Coords<T>, 4> getVertices(){
         return {Coords<T>{ld.x + width, ld.y}, {ld.x + width, ld.y + height}, {ld.x, ld.y + height}, ld};
