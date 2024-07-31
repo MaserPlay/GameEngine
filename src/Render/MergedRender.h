@@ -5,11 +5,15 @@
 #ifndef ARCADEGAMES_MERGEDRENDER_H
 #define ARCADEGAMES_MERGEDRENDER_H
 
-#include "glm/mat4x4.hpp"
-#include <utility>
 #include "Render.h"
-#include "Other.h"
-#include "Texture.h"
+#include "glm/mat4x4.hpp"
+#include "Engine.h"
+
+namespace Shaders{
+    constexpr const GLchar* const TextureFragmentShader = "#version 330 core\nin vec2 TexCoord;uniform sampler2D ourTexture;void main(){gl_FragColor = texture(ourTexture, TexCoord);}\0";
+    constexpr const GLchar* const vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 position;layout (location = 1) in vec4 color;layout (location = 2) in vec2 texCoord;uniform mat4 projection;out vec2 TexCoord;out vec4 Color;void main(){gl_Position = projection * vec4(position, 1);TexCoord = texCoord;Color = color;}\0";
+    constexpr const GLchar* const fragmentShaderSource = "#version 330 core\nin vec4 Color;void main(){gl_FragColor = Color;}\0";
+}
 
 class MergedRender final {
     //SHADER
@@ -38,11 +42,9 @@ public:
         return shaderProgram;
     }
 
-    static const GLchar* TextureFragmentShader;
-
 private:
-    const GLchar* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 position;layout (location = 1) in vec4 color;layout (location = 2) in vec2 texCoord;uniform mat4 projection;out vec2 TexCoord;out vec4 Color;void main(){gl_Position = projection * vec4(position, 1);TexCoord = texCoord;Color = color;}";
-    const GLchar* fragmentShaderSource = "#version 330 core\nin vec4 Color;void main()\n{\ngl_FragColor = Color;\n}\n\0";
+    const GLchar* vertexShaderSource = Shaders::vertexShaderSource;
+    const GLchar* fragmentShaderSource = Shaders::fragmentShaderSource;
     GLuint shaderProgram = 0;
     //BUFFER
 public:
@@ -51,37 +53,15 @@ public:
         DYNAMIC,
         STREAM
     };
-    struct Quard{
-        Quard(ExtendedCoords ld, float width, float height, std::shared_ptr<Texture> texture = NULL) : texture(std::move(texture)) { setVertices(ld, width, height);}
-        Quard() : Quard(std::array<ExtendedCoords, 4>{}, NULL) {}
-
-        inline
-        void setVertices(ExtendedCoords ld, float width, float height){
-            vertices = {ExtendedCoords{ld.x + width, ld.y}, {ld.x + width, ld.y + height}, {ld.x, ld.y + height}, ld};
-        }
-        std::shared_ptr<Texture> texture {};
-        Color color {1.,1.,1.,1.};
-
-        [[nodiscard]] const std::array<ExtendedCoords, 4> &getVertices() const {
-            return vertices;
-        }
-
-    private:
-        /**
-         * @deprecated
-         */
-        explicit Quard(const std::array<ExtendedCoords, 4> &vertices, std::shared_ptr<Texture> texture = nullptr) : vertices(vertices),
-                                                                                        texture(std::move(texture)) {}
-        std::array<ExtendedCoords, 4> vertices {};
-    };
-    std::unique_ptr<Quard> quard {new Quard()};
-    void VerticesChanged();
 
     virtual ~MergedRender();
     void setSpeed(SpeedContent speed) {
         MergedRender::speed = speed;
     }
 
+    std::unique_ptr<ExtendedQuard> quard {new ExtendedQuard()};
+    void VerticesChanged();
+private:
 private:
     SpeedContent speed = SpeedContent::DYNAMIC;
 

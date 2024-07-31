@@ -15,14 +15,14 @@ bool write = false;
 #endif
 
 namespace Localization{
-    void init(){
+    void init(const std::string& fileName){
         lang = std::setlocale(0, "");
         std::setlocale(LC_NUMERIC, "C");
-        std::ifstream f(SystemAdapter::GetGameFolderName("Localization")  + "lang.lang");
+        std::ifstream f(fileName);
         if (f.is_open()) {
             try{
                 local = nlohmann::json::parse(f);
-            } catch (std::exception e)
+            } catch (const std::exception& e)
             {
                 SPDLOG_WARN(e.what());
             }
@@ -47,9 +47,9 @@ namespace Localization{
         lang = code;
     }
 #ifdef _DEBUG
-    void genfile(){
+    void genfile(const std::string& fileName){
 // write prettified JSON to another file
-        std::ofstream o(SystemAdapter::GetGameFolderName("Localization")  + "lang.lang");
+        std::ofstream o(fileName);
         o << local;
     }
     void writefile(){

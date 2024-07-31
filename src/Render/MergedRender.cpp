@@ -3,18 +3,19 @@
 //
 
 #include "MergedRender.h"
-const GLchar* MergedRender::TextureFragmentShader = "#version 330 core\nin vec2 TexCoord;uniform sampler2D ourTexture;void main(){gl_FragColor = texture(ourTexture, TexCoord);}";
+
 
 #define LogError(shader) {GLchar infoLog[512]; GLint success; \
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success); \
             if (!success) { glGetShaderInfoLog(shader, 512, NULL, infoLog); SPDLOG_WARN("ERROR::SHADER {}", infoLog); \
             }/* else {SPDLOG_DEBUG("No ERROR::SHADER");}*/}
 void MergedRender::VerticesChanged() {
+    auto a = quard->getVertices();
     std::vector<GLfloat> vv {};
     indices = {};
     for (int j = 0; j <= 3; ++j) {
-        vv.push_back(quard->getVertices()[j].x);
-        vv.push_back(quard->getVertices()[j].y);
+        vv.push_back(a[j].x);
+        vv.push_back(a[j].y);
         //TEXTURE COORDS
         if (quard->texture != NULL) {
             vv.push_back(quard->texture->texturecords[j].x);

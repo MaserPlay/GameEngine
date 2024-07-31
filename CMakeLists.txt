@@ -1,15 +1,20 @@
 ﻿cmake_minimum_required(VERSION 3.28)
-project(Engine)
+project(Engine VERSION 1.0.0 LANGUAGES CXX)
+
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(ENGINEVERSION="0.1b")
 add_compile_definitions(ENGINEVERSIONCODE=0)
 add_compile_definitions(ENGINENAME="${PROJECT_NAME}")
 add_compile_definitions(ENGINEAUTHOR="MaserPlay")
 
-list(APPEND cpps src/System/*.cpp src/Audio/*.cpp src/Render/*.cpp src/Render/UI/*.cpp)
-list(APPEND dirs src/ src/System/ src/Audio/ src/Render/ src/Render/UI/)
+list(APPEND cpps src/*.cpp src/System/*.cpp src/Physics/*.cpp src/Audio/*.cpp src/Render/*.cpp src/Render/UI/*.cpp)
+list(APPEND dirs src/ src/System/ src/Physics/ src/Audio/ src/Render/ src/Render/UI/)
 
 add_subdirectory(third_party/Boxer)
 add_subdirectory(third_party/nativefiledialog-extended)
@@ -39,6 +44,18 @@ find_package(Freetype REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
+
 # LIBRARIES
 
 target_link_libraries(${PROJECT_NAME} PUBLIC cpr::cpr Freetype::Freetype nlohmann_json::nlohmann_json SndFile::sndfile glfw glm::glm GLEW::GLEW Boxer spdlog::spdlog nfd OpenAL::OpenAL ${Stb_INCLUDE_DIR} libzip::zip)
+
+option(ENGINE_BUILD_EXAMPLES "Build example programs" OFF)
+if (ENGINE_BUILD_EXAMPLES)
+    add_subdirectory(example)
+endif()
+
+option(ENGINE_BUILD_TESTS "Build GTests" OFF)
+if (ENGINE_BUILD_TESTS)
+    add_subdirectory(example)
+    add_subdirectory(GTest)
+endif()

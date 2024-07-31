@@ -4,7 +4,7 @@
 
 #ifndef ARCADEGAMES_FONT_H
 #define ARCADEGAMES_FONT_H
-#include "Other.h"
+#include "Engine.h"
 #include <cstddef>
 #include <map>
 #include "Texture.h"

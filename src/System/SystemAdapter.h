@@ -18,9 +18,9 @@ namespace SystemAdapter {
     typedef std::vector<nfdfilteritem_t> FileFilter;
 
     std::string OpenFileDialog(const FileFilter& filter, const std::string& defaultpath = "");
-    std::string GetGameFolderName(std::string name);
+//    std::string GetGameFolderName(std::string name);
     std::string ReadAll(std::ifstream &f);
-    void OpenLink(std::string);
+    void OpenLink(const std::string&);
 
     void Destroy();
 }

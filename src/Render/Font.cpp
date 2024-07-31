@@ -95,13 +95,13 @@ namespace Font{
                 if (!v[i] || v[i]->getShaderProgram() <= 0)
                 {
                     v[i] = std::make_unique<MergedRender>();
-                    v[i]->setFragmentShader(MergedRender::TextureFragmentShader);
-                    v[i]->quard = std::make_unique<MergedRender::Quard>(shift, ch->getWidth() * size, (float) ch->getHeight() * size, ch->getTexture());
+                    v[i]->setFragmentShader(Shaders::TextureFragmentShader);
+                    v[i]->quard = std::make_unique<ExtendedQuard>(shift, ch->getWidth() * size, (float) ch->getHeight() * size, ch->getTexture());
                     v[i]->setSpeed(MergedRender::SpeedContent::DYNAMIC);
                     v[i]->load();
                 } else {
-                    v[i]->quard->setVertices(shift, ch->getWidth() * size, (float) ch->getHeight() * size);
-                    v[i]->quard->color = color;
+                    v[i]->quard = std::make_unique<ExtendedQuard>(shift, ch->getWidth() * size, (float) ch->getHeight() * size);
+                    v[i]->quard->color = color;// quard->color = color;
                     v[i]->quard->texture = ch->getTexture();
                     v[i]->VerticesChanged();
                 }
