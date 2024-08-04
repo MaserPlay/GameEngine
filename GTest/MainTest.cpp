@@ -27,4 +27,5 @@ TEST(AudioTest, ReadingWav) {
     ASSERT_EQ(sf->getChannelCount(),1);
     ASSERT_EQ(sf->getOpenAlDataSize(),13192);
     ASSERT_EQ(sf->getSampleRate(),44100);
+    ASSERT_EQ(sf->getSampleCount(),6596);
 }
