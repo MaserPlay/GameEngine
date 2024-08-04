@@ -1,7 +1,9 @@
 ﻿cmake_minimum_required(VERSION 3.28)
 project(Engine VERSION 1.0.0 LANGUAGES CXX)
 
+if (ENGINE_BUILD_TESTS)
 enable_testing()
+endif ()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
