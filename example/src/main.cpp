@@ -101,7 +101,7 @@ void Domain(){
     }
 #else
     auto logger = spdlog::basic_logger_mt("logger", "logs/latest.log");
-//    spdlog::set_level(spdlog::level::info); // Set global log level to debug3
+    spdlog::set_level(spdlog::level::info); // Set global log level to debug3
     spdlog::set_default_logger(logger);
 #endif
     spdlog::set_pattern("%s:%# [%^%l%$] %v");
@@ -164,7 +164,7 @@ void Domain(){
     } else {
     }
 #else
-    setContext(new IntroContext());
+//    setContext(new IntroContext());
 #endif
     initEngine();
     // INIT GAME

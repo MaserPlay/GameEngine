@@ -8,7 +8,7 @@ endif ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/arc/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(ENGINEVERSION="0.1b")
 add_compile_definitions(ENGINEVERSIONCODE=0)
@@ -58,6 +58,13 @@ endif()
 
 option(ENGINE_BUILD_TESTS "Build GTests" OFF)
 if (ENGINE_BUILD_TESTS)
+    #move
+    add_custom_target(Engine_move_Test)
+    add_dependencies(${PROJECT_NAME} Engine_move_Test)
+    add_custom_command(TARGET Engine_move_Test POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
+            COMMENT "Move test_wav.wav")
+
     add_subdirectory(example)
     add_subdirectory(GTest)
 endif()

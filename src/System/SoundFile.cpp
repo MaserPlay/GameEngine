@@ -268,10 +268,7 @@ int SoundFile::getFormatFromFilename(const std::string& filename)
 }
 
 short *SoundFile::getOpenAlData() const {
-    short *membuf;
-    membuf = static_cast<short *>(malloc((size_t) (m_frames * m_channelCount) * sizeof(short)));
-    auto ee = sf_readf_short(m_file, membuf, m_frames);
-    return membuf;
+    return static_cast<short *>(malloc((size_t) (m_frames * m_channelCount) * sizeof(short)));
 }
 
 int SoundFile::getOpenAlDataSize() const {

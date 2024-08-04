@@ -3,6 +3,8 @@
 //
 #include "gtest/gtest.h"
 #include <gmock/gmock.h>
+
+#include <memory>
 //TEST
 #include "Physics.h"
 
@@ -17,4 +19,12 @@ TEST(PhysicsTest, AABBTest) {
     ASSERT_TRUE(AABB<short>(Quard<short>({0,0},1,1),Quard<short>({0,0},1,1)));
     ASSERT_FALSE(AABB<short>(Quard<short>({-1,-1},1,1),Quard<short>({0,0},1,1)));
     ASSERT_FALSE(AABB<short>(Quard<short>({2,2},1,1),Quard<short>({0,0},1,1)));
+}
+
+TEST(AudioTest, ReadingWav) {
+    auto sf = std::make_unique<SoundFile>();
+    sf->openRead("test_wav.wav");
+    ASSERT_EQ(sf->getChannelCount(),1);
+    ASSERT_EQ(sf->getOpenAlDataSize(),13192);
+    ASSERT_EQ(sf->getSampleRate(),44100);
 }

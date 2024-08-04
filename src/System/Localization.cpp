@@ -27,7 +27,7 @@ namespace Localization{
                 SPDLOG_WARN(e.what());
             }
         } else {
-            SPDLOG_WARN("cannot open SystemAdapter::GetGameFolderName(\"Localization\") + \"lang.lang\"");
+            SPDLOG_WARN("cannot open {}", fileName);
         }
     }
     std::string getTrans(std::string en){
