@@ -25,112 +25,52 @@
 #ifndef SFML_SOUNDFILE_HPP
 #define SFML_SOUNDFILE_HPP
 
-////////////////////////////////////////////////////////////
-// Headers
-////////////////////////////////////////////////////////////
-#include <sndfile.h>
 #include <string>
-#include <vector>
+#include <memory>
 
 
-typedef int16_t Int16;
-
-////////////////////////////////////////////////////////////
 /// \brief Provide read and write access to sound files
-///
-////////////////////////////////////////////////////////////
 class SoundFile
 {
 public :
 
-    ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
-    ////////////////////////////////////////////////////////////
-    SoundFile();
+    SoundFile() = default;
 
-    ////////////////////////////////////////////////////////////
     /// \brief Destructor
     ///
-    ////////////////////////////////////////////////////////////
-    ~SoundFile();
+    ~SoundFile() = default;
 
-    ////////////////////////////////////////////////////////////
-    /// \brief Get the total number of audio samples in the file
-    ///
-    /// \return Number of samples
-    ///
-    ////////////////////////////////////////////////////////////
-    std::size_t getSampleCount() const;
-
-    ////////////////////////////////////////////////////////////
     /// \brief Get the number of channels used by the sound
     ///
     /// \return Number of channels (1 = mono, 2 = stereo)
     ///
-    ////////////////////////////////////////////////////////////
     unsigned int getChannelCount() const;
 
-    ////////////////////////////////////////////////////////////
     /// \brief Get the sample rate of the sound
     ///
     /// \return Sample rate, in samples per second
     ///
-    ////////////////////////////////////////////////////////////
     unsigned int getSampleRate() const;
 
-    ////////////////////////////////////////////////////////////
     /// \brief Open a sound file for reading
     ///
     /// \param filename Path of the sound file to load
     ///
-    /// \return True if the file was successfully opened
-    ///
-    ////////////////////////////////////////////////////////////
-    bool openRead(const std::string& filename);
+    void openRead(const std::string& filename);
 
-    ////////////////////////////////////////////////////////////
     /// \brief Open a sound file in memory for reading
     ///
     /// \param data        Pointer to the file data in memory
     /// \param sizeInBytes Size of the data to load, in bytes
     ///
-    /// \return True if the file was successfully opened
+    void openRead(const void* const data,const std::size_t sizeInBytes);
+    /// \brief Open a sound file for reading
     ///
-    ////////////////////////////////////////////////////////////
-    bool openRead(const void* data, std::size_t sizeInBytes);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief a the sound file for writing
+    /// \param std::istream IStream the sound file to load
     ///
-    /// \param filename     Path of the sound file to write
-    /// \param channelCount Number of channels in the sound
-    /// \param sampleRate   Sample rate of the sound
-    ///
-    /// \return True if the file was successfully opened
-    ///
-    ////////////////////////////////////////////////////////////
-    bool openWrite(const std::string& filename, unsigned int channelCount, unsigned int sampleRate);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Read audio samples from the loaded sound
-    ///
-    /// \param data        Pointer to the sample array to fill
-    /// \param sampleCount Number of samples to read
-    ///
-    /// \return Number of samples actually read (may be less than \a sampleCount)
-    ///
-    ////////////////////////////////////////////////////////////
-    std::size_t read(Int16* data, std::size_t sampleCount);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Write audio samples to the file
-    ///
-    /// \param data        Pointer to the sample array to write
-    /// \param sampleCount Number of samples to write
-    ///
-    ////////////////////////////////////////////////////////////
-    void write(const Int16* data, std::size_t sampleCount);
+    void openRead(std::istream& is);
 
     short* getOpenAlData() const;
 
@@ -138,54 +78,45 @@ public :
 
 private :
 
-    ////////////////////////////////////////////////////////////
-    /// \brief Initialize the internal state of the sound file
-    ///
-    /// This function is called by all the openRead functions.
-    ///
-    /// \param fileInfo Information about the loaded sound file
-    ///
-    ////////////////////////////////////////////////////////////
-    void initialize(SF_INFO fileInfo);
 
-    ////////////////////////////////////////////////////////////
-    /// \brief Get the internal format of an audio file according to
-    ///        its filename extension
-    ///
-    /// \param filename Filename to check
-    ///
-    /// \return Internal format matching the filename (-1 if no match)
-    ///
-    ////////////////////////////////////////////////////////////
-    static int getFormatFromFilename(const std::string& filename);
-
-    ////////////////////////////////////////////////////////////
     /// \brief Data and callbacks for opening from memory
-    ///
-    ////////////////////////////////////////////////////////////
-    struct Memory
+    struct sFile
     {
-        const char* begin;
-        const char* current;
-        sf_count_t  size;
-
-        static sf_count_t getLength(void* user);
-        static sf_count_t read(void* ptr, sf_count_t count, void* user);
-        static sf_count_t seek(sf_count_t offset, int whence, void* user);
-        static sf_count_t tell(void* user);
+        char* ChunkID = new char[5]; //Contains the letters "RIFF" in ASCII form (0x52494646 big-endian form).
+        unsigned short ChunkSize {}; // 36 + SubChunk2Size, or more precisely:4 + (8 + SubChunk1Size) + (8 + SubChunk2Size)This is the size of the rest of the chunkfollowing this number.  This is the size of theentire file in bytes minus 8 bytes for the two fields not included in this count: ChunkID and ChunkSize.
+        char* Format = new char[5]; //Contains the letters "WAVE" (0x57415645 big-endian form).
+        struct fmt{
+            char* Subchunk1ID = new char[5];
+            unsigned short Subchunk1Size {};
+            unsigned short AudioFormat {};
+            unsigned short NumChannels {};
+            unsigned int SampleRate {};
+            unsigned long ByteRate {};
+            unsigned long BlockAlign {};
+            unsigned short BitsPerSample {};
+            size_t ExtraParamSize {};
+            void* ExtraParams {};
+            ~fmt(){delete Subchunk1ID;}
+        };
+        std::unique_ptr<fmt> _fmt {new fmt{}};
+        struct data{
+            char* Subchunk2ID = new char[5];
+            unsigned long Subchunk2Size {};
+            void* Data = new char[5];
+            ~data(){delete Subchunk2ID;}
+        };
+        std::unique_ptr<data> _data {new data{}};
+        ~sFile(){delete ChunkID; delete Format;}
     };
 
-    ////////////////////////////////////////////////////////////
-    // Member data
-    ////////////////////////////////////////////////////////////
-    SNDFILE*     m_file;         ///< File descriptor
+public:
+    const std::unique_ptr<sFile> &getMFile() const {
+        return m_file;
+    }
+    unsigned short getBitsPerSample() const;
 
 private:
-    Memory       m_memory;       ///< Memory reading info
-    std::size_t  m_sampleCount;  ///< Total number of samples in the file
-    unsigned int m_channelCount; ///< Number of channels used by the sound
-    unsigned int m_sampleRate;   ///< Number of samples per second
-    sf_count_t m_frames;
+    std::unique_ptr<sFile> m_file {};       ///< Memory reading info
 };
 
 

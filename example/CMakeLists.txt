@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.28)
 project(ExampleApp)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(APPVERSION="0.1b")
 add_compile_definitions(APPVERSIONCODE=0)
@@ -27,3 +27,10 @@ else ()
 endif()
 
 target_link_libraries(${PROJECT_NAME} Engine)
+
+#copy assets
+add_custom_target(assets)
+add_dependencies(${PROJECT_NAME} assets)
+add_custom_command(TARGET assets POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/example/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
+        COMMENT "Copy Assets")

@@ -38,7 +38,6 @@ find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenAL CONFIG REQUIRED)
-find_package(SndFile CONFIG REQUIRED)
 find_package(Stb REQUIRED)
 find_package(libzip CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
@@ -49,7 +48,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 
 # LIBRARIES
 
-target_link_libraries(${PROJECT_NAME} PUBLIC cpr::cpr Freetype::Freetype nlohmann_json::nlohmann_json SndFile::sndfile glfw glm::glm GLEW::GLEW Boxer spdlog::spdlog nfd OpenAL::OpenAL ${Stb_INCLUDE_DIR} libzip::zip)
+target_link_libraries(${PROJECT_NAME} PUBLIC cpr::cpr Freetype::Freetype nlohmann_json::nlohmann_json glfw glm::glm GLEW::GLEW Boxer spdlog::spdlog nfd OpenAL::OpenAL ${Stb_INCLUDE_DIR} libzip::zip)
 
 option(ENGINE_BUILD_EXAMPLES "Build example programs" OFF)
 if (ENGINE_BUILD_EXAMPLES)
@@ -58,13 +57,5 @@ endif()
 
 option(ENGINE_BUILD_TESTS "Build GTests" OFF)
 if (ENGINE_BUILD_TESTS)
-    #move
-    add_custom_target(Engine_move_Test)
-    add_dependencies(${PROJECT_NAME} Engine_move_Test)
-    add_custom_command(TARGET Engine_move_Test POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
-            COMMENT "Move test_wav.wav")
-
-    add_subdirectory(example)
     add_subdirectory(GTest)
 endif()

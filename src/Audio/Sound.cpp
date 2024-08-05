@@ -19,9 +19,13 @@ Sound::Sound(SoundFile *file) {
 
 void Sound::Load() {
     ALenum format;
-    if (sf->getChannelCount() == 1)
+    if (sf->getChannelCount() == 1 && sf->getBitsPerSample() == 8)
+        format = AL_FORMAT_MONO8;
+    else if (sf->getChannelCount() == 1 && sf->getBitsPerSample() == 16)
         format = AL_FORMAT_MONO16;
-    else if (sf->getChannelCount() == 2)
+    else if (sf->getChannelCount() == 2 && sf->getBitsPerSample() == 8)
+        format = AL_FORMAT_STEREO8;
+    else if (sf->getChannelCount() == 2 && sf->getBitsPerSample() == 16)
         format = AL_FORMAT_STEREO16;
     else {
         spdlog::error("ERROR: unrecognised wave format: {} channels", sf->getChannelCount());

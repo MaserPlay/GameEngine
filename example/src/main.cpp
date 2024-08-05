@@ -38,9 +38,6 @@ const std::unique_ptr<Font::Font>& getFont(){return baseFont;}
 bool skipintro = false;
 bool genlangfile = false;
 #endif
-//GAME
-std::unique_ptr<MergedRender> r {new MergedRender()};
-
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -84,6 +81,10 @@ void Init()
     }
 }
 void Domain(){
+//GAME
+    std::unique_ptr<MergedRender> r {new MergedRender()};
+    std::unique_ptr<Sound> s {new Sound("test_wav.wav")};
+
     //Create Log
 #ifdef _DEBUG
 // NO abort() message in windows
@@ -171,6 +172,11 @@ void Domain(){
 
     r->setSpeed(MergedRender::SpeedContent::STATIC);
     r->quard.reset(new ExtendedQuard({-.5,-.5},1,1));
+    r->load();
+
+    //INIT SOUND
+    s->Load();
+    s->Play();
 
     // Game loop
     while (!glfwWindowShouldClose(window))
@@ -187,6 +193,71 @@ void Domain(){
         Localization::genfile("lang.lang");
     }
 #endif
+    {
+        auto e = alGetError();
+        std::string errorDisc = "Unknown error";
+        switch (e) {
+            case AL_INVALID_NAME:
+                errorDisc = "AL_INVALID_NAME: a bad name (ID) was passed to an OpenAL function";
+                break;
+            case AL_INVALID_ENUM:
+                errorDisc = "AL_INVALID_ENUM: an invalid enum value was passed to an OpenAL function";
+                break;
+            case AL_INVALID_VALUE:
+                errorDisc = "AL_INVALID_VALUE: an invalid value was passed to an OpenAL function";
+                break;
+            case AL_INVALID_OPERATION:
+                errorDisc = "AL_INVALID_OPERATION: the requested operation is not valid";
+                break;
+            case AL_OUT_OF_MEMORY:
+                errorDisc = "AL_OUT_OF_MEMORY: the requested operation resulted in OpenAL running out of memory";
+                break;
+            case AL_NO_ERROR:
+                errorDisc = "AL_NO_ERROR";
+                break;
+            default:
+                errorDisc = "Unknown error";
+                break;
+        }
+        if (e != AL_NO_ERROR) {
+            ErrorBox((errorDisc + ". Code of error: " + std::to_string(e)).c_str())
+        }
+    }
+
+    {
+        auto e = glGetError();
+        std::string errorDisc = "Unknown error";
+        switch (e) {
+            case GL_NO_ERROR:
+                errorDisc = "No errors";
+                break;
+            case GL_INVALID_ENUM:
+                errorDisc = "Invalid enum";
+                break;
+            case GL_INVALID_VALUE:
+                errorDisc = "Invalid value";
+                break;
+            case GL_INVALID_OPERATION:
+                errorDisc = "Invalid operation";
+                break;
+            case GL_STACK_OVERFLOW:
+                errorDisc = "Stack overflow";
+                break;
+            case GL_STACK_UNDERFLOW:
+                errorDisc = "Stack underflow";
+                break;
+            case GL_OUT_OF_MEMORY:
+                errorDisc = "Out of memory";
+                break;
+            default:
+                errorDisc = "Unknown error";
+                break;
+        }
+        if (e != GL_NO_ERROR) {
+            ErrorBox((errorDisc + ". Code of error: " + std::to_string(e)).c_str());
+        }
+    }
+
     //OPENAL
     alcMakeContextCurrent(nullptr);
     alcDestroyContext(AlContext);
