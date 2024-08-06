@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required(VERSION 3.28)
-project(Engine VERSION 1.0.0 LANGUAGES CXX)
+project(Engine VERSION 0.2 LANGUAGES CXX)
 
 if (ENGINE_BUILD_TESTS)
 enable_testing()
@@ -10,7 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/arc/${CMAKE_BUILD_TYPE})
 
-add_compile_definitions(ENGINEVERSION="0.1b")
+add_compile_definitions(ENGINEVERSION="${CMAKE_PROJECT_VERSION}")
 add_compile_definitions(ENGINEVERSIONCODE=0)
 add_compile_definitions(ENGINENAME="${PROJECT_NAME}")
 add_compile_definitions(ENGINEAUTHOR="MaserPlay")
@@ -42,13 +42,12 @@ find_package(Stb REQUIRED)
 find_package(libzip CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(Freetype REQUIRED)
-find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
 
 # LIBRARIES
 
-target_link_libraries(${PROJECT_NAME} PUBLIC cpr::cpr Freetype::Freetype nlohmann_json::nlohmann_json glfw glm::glm GLEW::GLEW Boxer spdlog::spdlog nfd OpenAL::OpenAL ${Stb_INCLUDE_DIR} libzip::zip)
+target_link_libraries(${PROJECT_NAME} PUBLIC Freetype::Freetype nlohmann_json::nlohmann_json glfw glm::glm GLEW::GLEW Boxer spdlog::spdlog nfd OpenAL::OpenAL ${Stb_INCLUDE_DIR} libzip::zip)
 
 option(ENGINE_BUILD_EXAMPLES "Build example programs" OFF)
 if (ENGINE_BUILD_EXAMPLES)
