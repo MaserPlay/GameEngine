@@ -9,6 +9,7 @@
 
 INIReader::INIReader(const std::string &filename) {
     std::ifstream ifs {filename, std::ifstream::in};
+    SPDLOG_INFO("opening {} file", filename);
     if (!ifs){
         SPDLOG_ERROR("!ifs");
         throw std::ios::failure{"!ifs"};
@@ -32,4 +33,20 @@ INIReader::INIReader(const std::string &filename) {
         }
     }
     ifs.close();
+}
+
+void INIReader::write(const std::string& filename) {
+    std::ofstream ofs {filename};
+    SPDLOG_INFO("saving to {} file", filename);
+    if (!ofs){
+        SPDLOG_ERROR("!ofs");
+        throw std::ios::failure{"!ofs"};
+    }
+    ofs.exceptions(std::ios_base::badbit);
+    for (auto& sec : file) {
+        ofs << "[" + sec.first + "]\n";
+        for (auto& pair : sec.second) {
+            ofs << pair.first + "=" + pair.second << "\n";
+        }
+    }
 }

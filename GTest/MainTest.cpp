@@ -37,4 +37,5 @@ TEST(SystemTest, IniReader){
     ASSERT_TRUE(ini["Section4.0"].empty());
     ASSERT_EQ(ini["ViewState"]["FolderType"], "Generic");
     ASSERT_TRUE(ini["ViewState"]["Mode"].empty());
+    ASSERT_NO_THROW(ini.write("test_ini_out.ini"));
 }
