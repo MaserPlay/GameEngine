@@ -15,9 +15,6 @@ int main(int argc, char **argv) {
 
     return RUN_ALL_TESTS();
 }
-TEST(SystemAdapterTest, Readifstream_to_memory){
-
-}
 
 TEST(PhysicsTest, AABBTest) {
     ASSERT_TRUE(AABB<short>(Quard<short>({0,0},1,1),Quard<short>({0,0},1,1)));
