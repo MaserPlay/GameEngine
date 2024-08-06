@@ -8,6 +8,7 @@
 //TEST
 #include "Physics.h"
 #include "SystemAdapter.h"
+#include "INIReader.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
@@ -28,4 +29,12 @@ TEST(AudioTest, ReadingWav_fromifstream) {
     ASSERT_EQ(sf->getChannelCount(),1);
     ASSERT_EQ(sf->getSampleRate(),44100);
 //    ASSERT_EQ(sf->getOpenAlDataSize(),13192);
+}
+
+TEST(SystemTest, IniReader){
+    INIReader ini;
+    ASSERT_NO_THROW(ini = INIReader("test_ini.ini"));
+    ASSERT_TRUE(ini["Section4.0"].empty());
+    ASSERT_EQ(ini["ViewState"]["FolderType"], "Generic");
+    ASSERT_TRUE(ini["ViewState"]["Mode"].empty());
 }

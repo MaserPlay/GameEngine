@@ -22,3 +22,6 @@ add_dependencies(${PROJECT_NAME} assets)
 add_custom_command(TARGET assets POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
         COMMENT "Copy Assets")
+add_custom_command(TARGET assets POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_ini.ini ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_ini.ini
+        COMMENT "Copy Assets")
