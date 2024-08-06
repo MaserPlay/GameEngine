@@ -8,11 +8,11 @@
 
 COORDS_TEMPLATE
 bool AABB(const Quard<T>& f,const Quard<T>& s){
-    auto ax2 = f.ld.x + f.width;
-    auto ay2 = f.ld.y + f.height;
-    auto bx2 = s.ld.x + s.width;
-    auto by2 = s.ld.y + s.height;
-    if ((f.ld.y < by2) && (ay2 > s.ld.y) && (f.ld.x < bx2) && (ax2 > s.ld.x))
+    auto ax2 = f.coords.x + f.width;
+    auto ay2 = f.coords.y + f.height;
+    auto bx2 = s.coords.x + s.width;
+    auto by2 = s.coords.y + s.height;
+    if ((f.coords.y < by2) && (ay2 > s.coords.y) && (f.coords.x < bx2) && (ax2 > s.coords.x))
         return true;
     return false;
 }

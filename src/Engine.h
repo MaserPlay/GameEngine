@@ -25,16 +25,16 @@ typedef glm::vec4 Color;
 
 COORDS_TEMPLATE
 struct Quard{
-    Quard(Coords<T> ld, T width, T height, std::shared_ptr<Texture> texture = NULL) : texture(std::move(texture)), ld(ld), width(width), height(height) {}
+    Quard(Coords<T> ld, T width, T height, std::shared_ptr<Texture> texture = NULL) : texture(std::move(texture)), coords(ld), width(width), height(height) {}
     Quard() = default;
-    Coords<T> ld {};
+    Coords<T> coords{};
     T width {}, height{};
     std::shared_ptr<Texture> texture {};
     Color color {1.,1.,1.,1.};
 
 #define OPERATOR(t) \
     operator Quard<t>() const { \
-        Quard<t> to {(Coords<t>) ld, (t) width, (t) height, texture}; \
+        Quard<t> to {(Coords<t>) coords, (t) width, (t) height, texture}; \
         to.color = color; \
         return to; \
     }
@@ -51,7 +51,7 @@ struct Quard{
 
     inline
     std::array<Coords<T>, 4> getVertices(){
-        return {Coords<T>{ld.x + width, ld.y}, {ld.x + width, ld.y + height}, {ld.x, ld.y + height}, ld};
+        return {Coords<T>{coords.x + width, coords.y}, {coords.x + width, coords.y + height}, {coords.x, coords.y + height}, coords};
     }
 };
 
