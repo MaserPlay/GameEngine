@@ -21,6 +21,7 @@ namespace SystemAdapter {
 //    std::string GetGameFolderName(std::string name);
     std::string ReadAll(std::ifstream &f);
     void OpenLink(const std::string&);
+    std::string ExePath();
 
     void Destroy();
 }

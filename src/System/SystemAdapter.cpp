@@ -6,7 +6,7 @@
 #ifdef _WINDOWS
 #include <windows.h>
 #include <shellapi.h>
-
+#include "libloaderapi.h"
 #endif
 
 namespace SystemAdapter{
@@ -35,6 +35,16 @@ namespace SystemAdapter{
 #ifdef _WINDOWS
         ShellExecute(0, 0, link.c_str(), 0, 0 , SW_SHOW );
 #endif
+    }
+    std::string ExePath(){
+#ifdef _WINDOWS
+        char szPath[MAX_PATH] = {}; // тут все ясно
+        GetModuleFileNameA(NULL, szPath, MAX_PATH); // получаем путь
+        char *lstChr = strrchr(szPath, '\\') + 1; // указатель на последнее вхождение "\"
+        *lstChr = '\0'; // заменяем на ноль (обрезаем строку)
+        return szPath;
+#endif
+        return "";
     }
     std::string ReadAll(std::ifstream &stream){
         constexpr auto read_size = std::size_t(4096);

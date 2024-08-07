@@ -59,7 +59,7 @@ public:
         MergedRender::speed = speed;
     }
 
-    std::unique_ptr<ExtendedQuard> quard {new ExtendedQuard()};
+    std::shared_ptr<ExtendedQuard> quard {new ExtendedQuard()};
     void VerticesChanged();
 private:
 private:

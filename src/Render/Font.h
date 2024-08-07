@@ -96,7 +96,8 @@ namespace Font {
         FT_Face face = nullptr;
         std::map<char, std::unique_ptr<Char>> m {};
     };
-    void RenderText(const std::string& text, Font*, glm::vec2 pos, glm::mat4 mat, std::vector<std::unique_ptr<MergedRender>>& v, float size = 1, Color color = {1., 1., 1., 1.});
+    typedef std::vector<std::unique_ptr<MergedRender>> TextBuffer;
+    void RenderText(const std::string& text, Font*, glm::vec2 pos, glm::mat4 mat, TextBuffer& v, float size = 1, Color color = {1., 1., 1., 1.});
     long TextWidth(const std::string& text, Font*);
 }
 

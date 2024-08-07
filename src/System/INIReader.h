@@ -14,9 +14,10 @@ typedef std::map<std::string, std::string> Section;
 class INIReader {
 public:
     std::map<std::string, Section> file{};
-    Section operator[](const std::string& s){
+    Section& operator[](const std::string& s){
         return file[s];
     }
+    void read(const std::string&);
 
     void write(const std::string&);
 

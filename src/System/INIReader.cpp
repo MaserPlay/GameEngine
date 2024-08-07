@@ -8,6 +8,9 @@
 #include "debug.h"
 
 INIReader::INIReader(const std::string &filename) {
+    read(filename);
+}
+void INIReader::read(const std::string& filename){
     std::ifstream ifs {filename, std::ifstream::in};
     SPDLOG_INFO("opening {} file", filename);
     if (!ifs){
