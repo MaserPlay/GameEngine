@@ -84,10 +84,6 @@ void Init()
     }
 }
 void Domain(){
-//GAME
-    std::unique_ptr<MergedRender> r {new MergedRender()};
-    std::unique_ptr<Sound> s {new Sound("test_wav.wav")};
-
     //Create Log
 #ifdef _DEBUG
 // NO abort() message in windows
@@ -171,11 +167,14 @@ void Domain(){
 //    setContext(new IntroContext());
 #endif
     initEngine();
+    //GAME
+    std::unique_ptr<MergedRender> r {new MergedRender()};
+    std::unique_ptr<Sound> s {new Sound("test_wav.wav")};
     // INIT GAME
     mat = UI::Matrix(width, height);
-    auto pd = ParticlesData{};
+    auto pd = CircleParticlesData{};
     pd.size = .1;
-    auto part = CreateParticles(pd);
+    auto part = CreateCircleParticles(pd);
 
     r->setSpeed(MergedRender::SpeedContent::STATIC);
     r->quard.reset(new ExtendedQuard({-.5,-.5},1,.1));
@@ -191,7 +190,7 @@ void Domain(){
         START_LOOP
 
         r->use(mat);
-        UseParticles(part, pd, mat);
+        UseCircleParticles(part, pd, mat);
 
         END_LOOP(window)
     }

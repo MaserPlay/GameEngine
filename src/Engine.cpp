@@ -14,6 +14,8 @@ void initEngine() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glEnable(GL_DEPTH_TEST);
 //    glDepthFunc(GL_LESS);
+Shaders::TextureShader()->load();
+Shaders::StandartShader()->load();
 }
 
 namespace LoadResources
@@ -69,7 +71,7 @@ namespace LoadResources
             SPDLOG_WARN("{} not found", name);
         } else {
             content[size] = '\0';
-            render->setFragmentShader(content);
+            render->shader->setFragmentShader(content);
             SPDLOG_INFO("{} loaded", name);
         }
     }
@@ -86,7 +88,7 @@ namespace LoadResources
             SPDLOG_WARN("{} not found", name);
         } else {
             content[size] = '\0';
-            render->setVertexShader(content);
+            render->shader->setVertexShader(content);
             SPDLOG_INFO("{} loaded", name);
         }
     }

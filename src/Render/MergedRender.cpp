@@ -4,11 +4,20 @@
 
 #include "MergedRender.h"
 
+namespace Shaders{
+    std::shared_ptr<Shader> StandartShadervar {new Shader(Shaders::vertexShaderSource, Shaders::fragmentShaderSource)};
+    std::shared_ptr<Shader> TextureShadervar {new Shader(Shaders::vertexShaderSource, Shaders::TextureFragmentShader)};
+    std::shared_ptr<Shader> StandartShader(){
+        return StandartShadervar;
+    }
+    std::shared_ptr<Shader> TextureShader(){
+        return TextureShadervar;
+    }
+    std::shared_ptr<Shader> CreateShader(){
+        return std::make_shared<Shader>(Shaders::vertexShaderSource, Shaders::fragmentShaderSource);
+    }
+}
 
-#define LogError(shader) {GLchar infoLog[512]; GLint success; \
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &success); \
-            if (!success) { glGetShaderInfoLog(shader, 512, NULL, infoLog); SPDLOG_WARN("ERROR::SHADER {}", infoLog); \
-            }/* else {SPDLOG_DEBUG("No ERROR::SHADER");}*/}
 void MergedRender::VerticesChanged() {
     auto a = quard->getVertices();
     std::vector<GLfloat> vv {};
@@ -68,42 +77,13 @@ MergedRender::~MergedRender() {
     glDeleteBuffers(1, &EBO);
 }
 
-
-void MergedRender::SetUniform(float attr, const std::string& name) {
-    glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), attr);
-}
-
-void MergedRender::SetUniform(glm::vec2 attr, const std::string& name) {
-    glUniform2f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y);
-}
-
-void MergedRender::SetUniform(glm::vec3 attr, const std::string& name) {
-    glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y, attr.z);
-}
-
-void MergedRender::SetUniform(glm::vec4 attr, const std::string& name) {
-    glUniform4f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y, attr.z, attr.w);
-}
-
-void MergedRender::SetUniform(glm::mat4 attr, const std::string &name) {
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), 1, GL_FALSE, &attr[0][0]);
-}
-
 void MergedRender::use(glm::mat4 matrix) {
-    useProgramm();
+    shader->use();
 //    int width, height;
 //    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
 //    SetUniform({width, height}, "u_resolution");
-    SetUniform(matrix, "projection");
+    shader->SetUniform(matrix, "projection");
     useClear();
-}
-
-void MergedRender::useProgramm() {
-    //SHADER
-    if (shaderProgram >= 0)
-    {
-        glUseProgram(shaderProgram);
-    }
 }
 
 void MergedRender::useClear() {
@@ -112,7 +92,7 @@ void MergedRender::useClear() {
     if (quard->texture != NULL) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, quard->texture->getInitImage());
-        glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture"), 0);
+        glUniform1i(glGetUniformLocation(shader->getShaderProgram(), "ourTexture"), 0);
     }
 
     //BUFFER
@@ -129,33 +109,12 @@ void MergedRender::useClear() {
 }
 
 void MergedRender::load() {
-    if (shaderProgram <= 0)
+    if (VAO <= 0)
     {
         if (quard->texture != NULL) {
             quard->texture->Load();
         }
-        //SHADER
-        GLint vertexShader, fragmentShader;
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-        glCompileShader(vertexShader);
-        //LOG
-        LogError(vertexShader);
-        // Fragment shader
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-        glCompileShader(fragmentShader);
-        // Check for compile time errors
-        LogError(fragmentShader);
-        // Link shaders
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-        glLinkProgram(shaderProgram);
-        // Check for linking errors
-        LogError(shaderProgram);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+        shader->load();
         //BUFFER
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
@@ -181,7 +140,66 @@ void MergedRender::load() {
     }
 }
 
-void MergedRender::setInstancing(unsigned long count) {
-    useinstancing = true;
-    instancingcount = count;
+void Shader::use() {
+    if (shaderProgram >= 0)
+    {
+        glUseProgram(shaderProgram);
+    }
+}
+
+#define LogError(shader) {GLchar infoLog[512]; GLint success; \
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success); \
+            if (!success) { glGetShaderInfoLog(shader, 512, NULL, infoLog); SPDLOG_WARN("ERROR::SHADER {}", infoLog); \
+            }/* else {SPDLOG_DEBUG("No ERROR::SHADER");}*/}
+void Shader::load() {
+    if (shaderProgram <= 0) {
+        //SHADER
+        GLint vertexShader, fragmentShader;
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+        glCompileShader(vertexShader);
+        //LOG
+        LogError(vertexShader);
+        // Fragment shader
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+        glCompileShader(fragmentShader);
+        // Check for compile time errors
+        LogError(fragmentShader);
+        // Link shaders
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, fragmentShader);
+        glLinkProgram(shaderProgram);
+        // Check for linking errors
+        LogError(shaderProgram);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+    }
+}
+#undef LogError
+
+
+void Shader::SetUniform(float attr, const std::string& name) {
+    glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), attr);
+}
+
+void Shader::SetUniform(glm::vec2 attr, const std::string& name) {
+    glUniform2f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y);
+}
+
+void Shader::SetUniform(glm::vec3 attr, const std::string& name) {
+    glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y, attr.z);
+}
+
+void Shader::SetUniform(glm::vec4 attr, const std::string& name) {
+    glUniform4f(glGetUniformLocation(shaderProgram, name.c_str()), attr.x, attr.y, attr.z, attr.w);
+}
+
+void Shader::SetUniform(glm::mat4 attr, const std::string &name) {
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), 1, GL_FALSE, &attr[0][0]);
+}
+
+Shader::~Shader() {
+    glDeleteProgram(shaderProgram);
 }

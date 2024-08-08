@@ -45,9 +45,12 @@ public:
     virtual ~Texture();
 
     void Load();
+    void load(){Load();}
 
-    bool getIsNull() const{
-        return initImage == 0;
+    [[nodiscard]] bool IsNull() const{return image == nullptr || initImage == 0;}
+
+    explicit operator bool() const{
+        return !IsNull();
     }
 
     [[nodiscard]] int getWidth() const {

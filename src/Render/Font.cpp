@@ -95,7 +95,7 @@ namespace Font{
                 if (!v[i] || v[i]->getShaderProgram() <= 0)
                 {
                     v[i] = std::make_unique<MergedRender>();
-                    v[i]->setFragmentShader(Shaders::TextureFragmentShader);
+                    v[i]->useTextureShader();
                     v[i]->quard = std::make_unique<ExtendedQuard>(shift, ch->getWidth() * size, (float) ch->getHeight() * size, ch->getTexture());
                     v[i]->setSpeed(MergedRender::SpeedContent::DYNAMIC);
                     v[i]->load();
