@@ -174,6 +174,8 @@ void Domain(){
     mat = UI::Matrix(width, height);
     auto pd = CircleParticlesData{};
     pd.size = .1;
+    pd.distdifference = 5;
+    pd.color = {1.,0.,0.,1.};
     auto part = CreateCircleParticles(pd);
 
     r->setSpeed(MergedRender::SpeedContent::STATIC);

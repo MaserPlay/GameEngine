@@ -14,6 +14,7 @@ std::shared_ptr<Shader> CircleTextureShader {};
 std::shared_ptr<MergedRender> CreateCircleParticles(const CircleParticlesData& pd){
     auto out = std::make_shared<MergedRender>();
     out->quard = std::make_shared<ExtendedQuard>(pd.position, pd.size, pd.size);
+    out->quard->color = pd.color;
     out->setInstancing(pd.count);
     if (!pd.texture->IsNull())
     {

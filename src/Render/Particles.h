@@ -14,6 +14,7 @@ struct CircleParticlesData{
     float lifetime {1};
     float distdifference {1};
     unsigned long count{10};
+    Color color {1.};
 };
 std::shared_ptr<MergedRender> CreateCircleParticles(const CircleParticlesData& pd);
 void UseCircleParticles(std::shared_ptr<MergedRender>& r, const CircleParticlesData& pd, glm::mat4 mat);
