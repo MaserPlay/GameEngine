@@ -19,6 +19,7 @@ namespace SystemAdapter {
 
     std::string OpenFileDialog(const FileFilter& filter, const std::string& defaultpath = "");
 //    std::string GetGameFolderName(std::string name);
+    std::string ReadAll(std::string &filename);
     std::string ReadAll(std::ifstream &f);
     void OpenLink(const std::string&);
     std::string ExePath();

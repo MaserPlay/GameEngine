@@ -32,5 +32,5 @@ target_link_libraries(${PROJECT_NAME} Engine)
 add_custom_target(assets)
 add_dependencies(${PROJECT_NAME} assets)
 add_custom_command(TARGET assets POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/example/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/example/Assets/ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Copy Assets")

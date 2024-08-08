@@ -63,6 +63,10 @@ namespace SystemAdapter{
         out.append(buf, 0, stream.gcount());
         return out;
     }
+    std::string ReadAll(std::string &filename){
+        auto ifs = std::ifstream{filename};
+        return ReadAll(ifs);
+    }
 
     void Destroy(){
         NFD_Quit();

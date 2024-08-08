@@ -20,8 +20,5 @@ target_link_libraries(${PROJECT_NAME} Engine GTest::gtest GTest::gtest_main GTes
 add_custom_target(assets)
 add_dependencies(${PROJECT_NAME} assets)
 add_custom_command(TARGET assets POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_wav.wav ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_wav.wav
-        COMMENT "Copy Assets")
-add_custom_command(TARGET assets POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/GTest/Assets/test_ini.ini ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_ini.ini
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/GTest/Assets/ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Copy Assets")

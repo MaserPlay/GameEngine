@@ -27,6 +27,8 @@
 #include "System/Localization.h"
 #include "Font.h"
 #include "MergedRender.h"
+#include "Particles.h"
+#include "UI.h"
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -38,6 +40,7 @@ const std::unique_ptr<Font::Font>& getFont(){return baseFont;}
 bool skipintro = false;
 bool genlangfile = false;
 #endif
+glm::mat4 mat{1};
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -169,9 +172,13 @@ void Domain(){
 #endif
     initEngine();
     // INIT GAME
+    mat = UI::Matrix(width, height);
+    auto pd = ParticlesData{};
+    pd.size = .1;
+    auto part = CreateParticles(pd);
 
     r->setSpeed(MergedRender::SpeedContent::STATIC);
-    r->quard.reset(new ExtendedQuard({-.5,-.5},1,1));
+    r->quard.reset(new ExtendedQuard({-.5,-.5},1,.1));
     r->load();
 
     //INIT SOUND
@@ -183,7 +190,8 @@ void Domain(){
     {
         START_LOOP
 
-        r->use({1});
+        r->use(mat);
+        UseParticles(part, pd, mat);
 
         END_LOOP(window)
     }
@@ -193,6 +201,7 @@ void Domain(){
         Localization::genfile("lang.lang");
     }
 #endif
+    s.reset();
     {
         auto e = alGetError();
         std::string errorDisc = "Unknown error";
@@ -224,39 +233,39 @@ void Domain(){
         }
     }
 
-    {
-        auto e = glGetError();
-        std::string errorDisc = "Unknown error";
-        switch (e) {
-            case GL_NO_ERROR:
-                errorDisc = "No errors";
-                break;
-            case GL_INVALID_ENUM:
-                errorDisc = "Invalid enum";
-                break;
-            case GL_INVALID_VALUE:
-                errorDisc = "Invalid value";
-                break;
-            case GL_INVALID_OPERATION:
-                errorDisc = "Invalid operation";
-                break;
-            case GL_STACK_OVERFLOW:
-                errorDisc = "Stack overflow";
-                break;
-            case GL_STACK_UNDERFLOW:
-                errorDisc = "Stack underflow";
-                break;
-            case GL_OUT_OF_MEMORY:
-                errorDisc = "Out of memory";
-                break;
-            default:
-                errorDisc = "Unknown error";
-                break;
-        }
-        if (e != GL_NO_ERROR) {
-            ErrorBox((errorDisc + ". Code of error: " + std::to_string(e)).c_str());
-        }
-    }
+//    {
+//        auto e = glGetError();
+//        std::string errorDisc = "Unknown error";
+//        switch (e) {
+//            case GL_NO_ERROR:
+//                errorDisc = "No errors";
+//                break;
+//            case GL_INVALID_ENUM:
+//                errorDisc = "Invalid enum";
+//                break;
+//            case GL_INVALID_VALUE:
+//                errorDisc = "Invalid value";
+//                break;
+//            case GL_INVALID_OPERATION:
+//                errorDisc = "Invalid operation";
+//                break;
+//            case GL_STACK_OVERFLOW:
+//                errorDisc = "Stack overflow";
+//                break;
+//            case GL_STACK_UNDERFLOW:
+//                errorDisc = "Stack underflow";
+//                break;
+//            case GL_OUT_OF_MEMORY:
+//                errorDisc = "Out of memory";
+//                break;
+//            default:
+//                errorDisc = "Unknown error";
+//                break;
+//        }
+//        if (e != GL_NO_ERROR) {
+//            ErrorBox((errorDisc + ". Code of error: " + std::to_string(e)).c_str());
+//        }
+//    }
 
     //OPENAL
     alcMakeContextCurrent(nullptr);
@@ -300,6 +309,7 @@ int main(int argc, char** argv)
 void window_size_callback(GLFWwindow* window, int width, int height){
     WIDTH = width; HEIGHT = height;
     glViewport(0,0,width,height);
+    mat = UI::Matrix(width, height);
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {

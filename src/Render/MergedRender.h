@@ -18,6 +18,7 @@ namespace Shaders{
 class MergedRender final {
     //SHADER
 public:
+    void setInstancing(unsigned long count);
     MergedRender() = default;
     MergedRender(const MergedRender &p) = delete;   // удаляем конструктор
     void load();
@@ -67,7 +68,8 @@ private:
 
     GLuint VBO{}, VAO{}, EBO{};
     std::vector<GLuint> indices;
-
+    bool useinstancing{false};
+    unsigned long instancingcount{1};
 };
 
 

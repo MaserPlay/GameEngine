@@ -91,9 +91,9 @@ void MergedRender::SetUniform(glm::mat4 attr, const std::string &name) {
 
 void MergedRender::use(glm::mat4 matrix) {
     useProgramm();
-    int width, height;
-    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-    SetUniform({width, height}, "u_resolution");
+//    int width, height;
+//    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+//    SetUniform({width, height}, "u_resolution");
     SetUniform(matrix, "projection");
     useClear();
 }
@@ -117,7 +117,12 @@ void MergedRender::useClear() {
 
     //BUFFER
     glBindVertexArray(VAO);
-    glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, 0);
+    if (useinstancing)
+    {
+        glDrawElementsInstanced(GL_QUADS, indices.size(), GL_UNSIGNED_INT, 0, instancingcount);
+    } else {
+        glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, 0);
+    }
     //RESET ALL
 //    glBindVertexArray(0);
 //    glUseProgram(0);
@@ -174,4 +179,9 @@ void MergedRender::load() {
 
         glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
     }
+}
+
+void MergedRender::setInstancing(unsigned long count) {
+    useinstancing = true;
+    instancingcount = count;
 }
